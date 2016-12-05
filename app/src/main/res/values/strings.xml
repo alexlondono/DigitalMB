@@ -3,4 +3,8 @@
 
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="error_title">Oops! Sorry!</string>
+    <string name="error_message">There was an error. Please try again.</string>
+    <string name="error_ok_btn_text">OK</string>
+    <string name="Network_unavailable_message">Network is unavailable</string>
 </resources>
