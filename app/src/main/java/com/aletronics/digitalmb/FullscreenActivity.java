@@ -21,6 +21,9 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 import okhttp3.Call;
@@ -34,17 +37,15 @@ import okhttp3.Response;
  * status bar and navigation/system bar) with user interaction.
  */
 public class FullscreenActivity extends AppCompatActivity {
-    /**
-     * Whether or not the system UI should be auto-hidden after
-     * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
-     */
-    private static final boolean AUTO_HIDE = true;
+    //Used for my new CurrentWeather Class
+    private CurrentWeather mCurrentWeather;
     private String TAG = null;
+       // Whether or not the system UI should be auto-hidden after
+       // {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
+    private static final boolean AUTO_HIDE = true;
 
-    /**
-     * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
-     * user interaction before hiding the system UI.
-     */
+     // If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
+     // user interaction before hiding the system UI.
     private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
 
     /**
@@ -86,14 +87,23 @@ public class FullscreenActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     try {
-                        Log.v(TAG, response.body().string());
-                        if (response.isSuccessful()) {
-
-                        } else {
+                        String jsonData = response.body().string();
+                        Log.v(TAG, jsonData);
+                        if (response.isSuccessful())
+                        {
+                            mCurrentWeather = getCurrentDetails(jsonData);
+                        }
+                        else
+                        {
                             alertUserAboutError();
                         }
-                    } catch (IOException e) {
+                    }
+                    catch (IOException e)
+                    {
                         Log.e(TAG, "Exception caught: ", e);
+                    }catch (JSONException e)
+                    {
+                        Log.e(TAG, "Exception caught from JSON: ", e);
                     }
                 }
 
@@ -128,6 +138,25 @@ public class FullscreenActivity extends AppCompatActivity {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client2 = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+
+    private CurrentWeather getCurrentDetails(String jsonData) throws JSONException{
+        JSONObject forecast = new JSONObject(jsonData);
+        String timezone = forecast.getString("timezone");
+
+        Log.i(TAG,"From JSON CurrentWeather: "+timezone);
+
+        JSONObject currently = forecast.getJSONObject("currently");
+
+        CurrentWeather currentWeather = new CurrentWeather();
+        currentWeather.setHumidity(currently.getDouble("humidity"));
+        currentWeather.setTime(currently.getLong("time"));
+        currentWeather.setIcon(currently.getString("icon"));
+        currentWeather.setPrecipChance(currently.getDouble("precipProbability"));
+        currentWeather.setSummary(currently.getString("summary"));
+        currentWeather.setTemp(currently.getDouble("temperature"));
+
+        return currentWeather;
     }
 
     private boolean isNetworkAvailable() {
