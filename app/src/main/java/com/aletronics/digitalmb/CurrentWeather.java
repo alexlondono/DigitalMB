@@ -1,5 +1,9 @@
 package com.aletronics.digitalmb;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 /**
  * Created by Alex on 12/4/2016.
  */
@@ -12,6 +16,8 @@ public class CurrentWeather {
     private double mPrecipChance = 0.0;
     private String mSummary = null;
     private double mTemperature;
+
+    private String mTimeZone;
 
     public String getIcon() {
         return mIcon;
@@ -61,4 +67,19 @@ public class CurrentWeather {
         mSummary = summary;
     }
 
+    public String getTimeZone() {
+        return mTimeZone;
+    }
+
+    public void setTimeZone(String timeZone) {
+        mTimeZone = timeZone;
+    }
+
+    public String getFormattedTime(){
+        SimpleDateFormat formatter = new SimpleDateFormat("h:mm:a");
+        formatter.setTimeZone(TimeZone.getTimeZone(getTimeZone()));
+        Date dateTime = new Date(getTime() * 1000);
+
+        return formatter.format(dateTime);
+    }
 }
