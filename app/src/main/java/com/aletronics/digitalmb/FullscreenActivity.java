@@ -37,6 +37,7 @@ import okhttp3.Response;
  * status bar and navigation/system bar) with user interaction.
  */
 public class FullscreenActivity extends AppCompatActivity {
+    private Google_Slides_Api mGoogle_slides_api;
     //Used for my new CurrentWeather Class
     private CurrentWeather mCurrentWeather;
     private String TAG = null;
